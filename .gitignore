@@ -1,0 +1,4 @@
+*.orig
+.DS_Store
+tmp/
+doc/tags
