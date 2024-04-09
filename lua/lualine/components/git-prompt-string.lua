@@ -1,8 +1,4 @@
 local lualine_require = require('lualine_require')
-local modules = lualine_require.lazy_require({
-  highlight = 'lualine.highlight',
-  utils = 'lualine.utils.utils',
-})
 local M = lualine_require.require('lualine.component'):extend()
 local git_prompt_string_lualine = require('git-prompt-string-lualine')
 
@@ -27,6 +23,76 @@ local default_options = {
   },
 }
 
+-- TODO cleanup/move to function other file
+local fs_handle, err_name, err_msg = vim.uv.new_fs_event()
+if not fs_handle then
+  vim.notify(
+    string.format(
+      'git-prompt-string-lualine.nvim: %s, err_name: %s, err_msg: %s',
+      'error creating fs_event',
+      err_name or 'undefined',
+      err_msg or 'undefined'
+    ),
+    vim.log.levels.ERROR,
+    {}
+  )
+  return
+end
+
+local set_prompt_and_refresh = function(delay, cb)
+  git_prompt_string_lualine.set_prompt(function()
+    if type(cb) == 'function' then
+      cb()
+    end
+    require('lualine').refresh()
+  end, delay)
+end
+
+local handle_dir_change = function()
+  local success
+  success, err_name, err_msg = fs_handle:stop()
+  if not success then
+    vim.notify(
+      string.format(
+        'git-prompt-string-lualine.nvim: %s, err_name: %s, err_msg: %s',
+        'error stopping fs_handle',
+        err_name or 'undefined',
+        err_msg or 'undefined'
+      ),
+      vim.log.levels.ERROR,
+      {}
+    )
+    return
+  end
+
+  if git_prompt_string_lualine.prompt.branch_info == '' then
+    return
+  end
+
+  local flags = {
+    watch_entry = true, -- true = when dir, watch dir inode, not dir content
+    stat = false, -- true = don't use inotify/kqueue but periodic check, not implemented
+    recursive = true, -- true = watch dirs inside dirs
+  }
+
+  ---@diagnostic disable-next-line: param-type-mismatch
+  success, err_name, err_msg =
+    fs_handle:start('.', flags, vim.schedule_wrap(set_prompt_and_refresh))
+  if not success then
+    vim.notify(
+      string.format(
+        'git-prompt-string-lualine.nvim: %s, err_name: %s, err_msg: %s',
+        'error starting fs_handle',
+        err_name or 'undefined',
+        err_msg or 'undefined'
+      ),
+      vim.log.levels.ERROR,
+      {}
+    )
+    return
+  end
+end
+
 function M:init(options)
   M.super.init(self, options)
   self.options = vim.tbl_deep_extend('keep', self.options or {}, default_options)
@@ -49,12 +115,6 @@ function M:init(options)
     }
   end
 
-  local set_prompt_and_refresh = function(delay)
-    git_prompt_string_lualine.set_prompt(function()
-      require('lualine').refresh()
-    end, delay)
-  end
-
   local refresh_events = {
     'DirChanged',
     'FileChangedShellPost',
@@ -67,8 +127,12 @@ function M:init(options)
     vim.api.nvim_create_autocmd(e, {
       group = vim.api.nvim_create_augroup('LualineEvent' .. e, { clear = true }),
       pattern = '*',
-      callback = function()
-        set_prompt_and_refresh(0)
+      callback = function(ev)
+        set_prompt_and_refresh(0, function()
+          if ev.event == 'DirChanged' then
+            handle_dir_change()
+          end
+        end)
       end,
     })
   end
@@ -88,49 +152,22 @@ function M:init(options)
   end
 
   git_prompt_string_lualine.setup(self.options.prompt_config)
-
-  local handle, err_name, err_msg = vim.uv.new_fs_event()
-  if not handle then
-    vim.notify(
-      string.format(
-        'git-prompt-string-lualine.nvim: %s, err_name: %s, err_msg: %s',
-        'error creating fs_event',
-        err_name or 'undefined',
-        err_msg or 'undefined'
-      ),
-      vim.log.levels.ERROR,
-      {}
-    )
-    return
-  end
-
-  local flags = {
-    watch_entry = true, -- true = when dir, watch dir inode, not dir content
-    stat = false, -- true = don't use inotify/kqueue but periodic check, not implemented
-    recursive = true, -- true = watch dirs inside dirs
-  }
-
-  -- TODO: on dir change, change path for event watch
-  -- TODO: only watch dir if it is a git repo, ie., git-prompt-string returns a value the first time
-
-  ---@diagnostic disable-next-line: param-type-mismatch
-  vim.uv.fs_event_start(handle, '.', flags, vim.schedule_wrap(set_prompt_and_refresh))
 end
 
 function M.update_status(self)
   if git_prompt_string_lualine.prompt == nil then
     git_prompt_string_lualine.prompt = git_prompt_string_lualine.git_prompt_string_json()
+    handle_dir_change()
   end
   local prompt = git_prompt_string_lualine.prompt or {}
   if self.options.colored and prompt.color ~= '' then
     self.options.icon_color_highlight = self.highlights[prompt.color]
     self.options.color_highlight = self.highlights[prompt.color]
   end
-
   if self.options.trim_prompt_prefix then
-    prompt.promptPrefix = prompt.promptPrefix:gsub('^%s+', '')
+    prompt.prompt_prefix = prompt.prompt_prefix:gsub('^%s+', '')
   end
-  return prompt.promptPrefix .. prompt.branchInfo .. prompt.branchStatus .. prompt.promptSuffix
+  return prompt.prompt_prefix .. prompt.branch_info .. prompt.branch_status .. prompt.prompt_suffix
 end
 
 return M

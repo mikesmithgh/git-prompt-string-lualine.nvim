@@ -45,12 +45,13 @@ M.git_prompt_string_json = function()
   end
   local stdout = vim.system(cmd):wait().stdout or ''
   local json = vim.json.decode(stdout == '' and '{}' or stdout)
-  json.color = json.color or ''
-  json.promptPrefix = json.promptPrefix or ''
-  json.branchInfo = json.branchInfo or ''
-  json.branchStatus = json.branchStatus or ''
-  json.promptSuffix = json.promptSuffix or ''
-  return json
+  return {
+    color = json.color or '',
+    prompt_prefix = json.promptPrefix or '',
+    branch_info = json.branchInfo or '',
+    branch_status = json.branchStatus or '',
+    prompt_suffix = json.promptSuffix or '',
+  }
 end
 
 M.set_prompt = function(cb, delay)
