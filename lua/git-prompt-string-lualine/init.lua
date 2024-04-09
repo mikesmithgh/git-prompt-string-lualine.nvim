@@ -53,7 +53,7 @@ M.git_prompt_string_json = function()
   return json
 end
 
-M.set_prompt = function(cb)
+M.set_prompt = function(cb, delay)
   vim.schedule(function()
     if not M.prompt then
       M.prompt = M.git_prompt_string_json()
@@ -69,7 +69,7 @@ M.set_prompt = function(cb)
       if type(cb) == 'function' then
         cb()
       end
-    end, 500)
+    end, delay or 500)
   end)
 end
 

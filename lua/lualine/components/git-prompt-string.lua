@@ -49,6 +49,12 @@ function M:init(options)
     }
   end
 
+  local set_prompt_and_refresh = function(delay)
+    git_prompt_string_lualine.set_prompt(function()
+      require('lualine').refresh()
+    end, delay)
+  end
+
   local refresh_events = {
     'DirChanged',
     'FileChangedShellPost',
@@ -57,27 +63,28 @@ function M:init(options)
     'SessionLoadPost',
     'VimEnter',
   }
+  for _, e in pairs(refresh_events) do
+    vim.api.nvim_create_autocmd(e, {
+      group = vim.api.nvim_create_augroup('LualineEvent' .. e, { clear = true }),
+      pattern = '*',
+      callback = function()
+        set_prompt_and_refresh(0)
+      end,
+    })
+  end
 
   local refresh_user_events = {
     'FugitiveChanged',
     'VeryLazy',
   }
-
-  vim.api.nvim_create_augroup('GitPromptStringLualineRefresh', { clear = true })
-  modules.utils.define_autocmd(
-    table.concat(refresh_events, ','),
-    '*',
-    [[lua require('git-prompt-string-lualine').set_prompt()]],
-    'GitPromptStringLualineRefresh'
-  )
-  vim.api.nvim_create_augroup('GitPromptStringLualineUserRefresh', { clear = true })
-  for _, pattern in pairs(refresh_user_events) do
-    modules.utils.define_autocmd(
-      'User',
-      pattern,
-      [[lua require('git-prompt-string-lualine').set_prompt()]],
-      'GitPromptStringLualineUserRefresh'
-    )
+  for _, e in pairs(refresh_user_events) do
+    vim.api.nvim_create_autocmd('User', {
+      group = vim.api.nvim_create_augroup('LualineUserEvent' .. e, { clear = true }),
+      pattern = e,
+      callback = function()
+        set_prompt_and_refresh(0)
+      end,
+    })
   end
 
   git_prompt_string_lualine.setup(self.options.prompt_config)
@@ -107,16 +114,7 @@ function M:init(options)
   -- TODO: only watch dir if it is a git repo, ie., git-prompt-string returns a value the first time
 
   ---@diagnostic disable-next-line: param-type-mismatch
-  vim.uv.fs_event_start(
-    handle,
-    '.',
-    flags,
-    vim.schedule_wrap(function()
-      git_prompt_string_lualine.set_prompt(function()
-        require('lualine').refresh()
-      end)
-    end)
-  )
+  vim.uv.fs_event_start(handle, '.', flags, vim.schedule_wrap(set_prompt_and_refresh))
 end
 
 function M.update_status(self)
