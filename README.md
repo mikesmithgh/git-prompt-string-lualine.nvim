@@ -1,1 +1,1 @@
-# git-prompt-string-lualine.nvim
+# 📍 git-prompt-string-lualine.nvim
