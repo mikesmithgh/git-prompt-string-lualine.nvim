@@ -54,7 +54,7 @@ M.git_prompt_string_json = function()
   }
 end
 
-M.set_prompt = function(cb, delay)
+M.set_prompt = function(callback, delay)
   vim.schedule(function()
     if not M.prompt then
       M.prompt = M.git_prompt_string_json()
@@ -67,11 +67,20 @@ M.set_prompt = function(cb, delay)
     M.timer = vim.defer_fn(function()
       M.prompt = M.git_prompt_string_json()
       M.timer = nil
-      if type(cb) == 'function' then
-        cb()
+      if type(callback) == 'function' then
+        callback()
       end
     end, delay or 500)
   end)
+end
+
+M.set_prompt_and_refresh = function(callback, delay)
+  M.set_prompt(function()
+    if type(callback) == 'function' then
+      callback()
+    end
+    require('lualine').refresh()
+  end, delay)
 end
 
 return M
