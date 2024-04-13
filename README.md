@@ -6,4 +6,4 @@ git-prompt-string-lualine.nvim is a [lualine.nvim](https://github.com/nvim-luali
 
 [![neovim: v0.10+](https://img.shields.io/static/v1?style=flat-square&label=neovim&message=v0.10%2b&logo=neovim&labelColor=282828&logoColor=8faa80&color=414b32)](https://neovim.io/)
 
-![git-prompt-string-lualine](https://github.com/mikesmithgh/git-prompt-string-lualine.nvim/assets/10135646/6cc38a40-2981-4985-8753-c7d7d7d5dafc)
+![git-prompt-string-lualine](https://github.com/mikesmithgh/git-prompt-string-lualine.nvim/assets/10135646/d17ee2bf-e796-4246-9488-18a938a7d807)
