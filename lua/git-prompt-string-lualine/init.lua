@@ -43,7 +43,7 @@ M.git_prompt_string_json = function()
   if opts.color_disabled then
     table.insert(cmd, '--color-disabled')
   end
-  local stdout = vim.system(cmd):wait().stdout or ''
+  local stdout = vim.fn.system(cmd) or '' -- replace with vim.system if/when we no longer support neovim v9
   local json = vim.json.decode(stdout == '' and '{}' or stdout)
   return {
     color = json.color or '',
