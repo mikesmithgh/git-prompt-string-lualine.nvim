@@ -14,22 +14,27 @@ on:
         default: false
 
 jobs:
-  # TODO: add test matrix for v9+ nightly
   plenary:
+    strategy:
+      matrix:
+        nvim_version: 
+          - 'stable'  # v0.9.5
+          - 'nightly' 
     runs-on: ubuntu-22.04
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Install git-prompt-string
+    - name: Install git-prompt-string latest
       run: |
         go install github.com/mikesmithgh/git-prompt-string@latest 
+        echo "$HOME/go/bin" >> $GITHUB_PATH
 
     - name: Setup Neovim ${{ matrix.nvim_version }} 
       uses: rhysd/action-setup-vim@v1
       with:
         neovim: true
-        version: 'stable'
+        version: ${{ matrix.nvim_version }}
 
     - name: (debug) Setup tmate session
       if: ${{ inputs.enable_debug_tmate }}
@@ -37,6 +42,5 @@ jobs:
 
     - name: Test git-prompt-string-lualine
       run: |
-        export PATH="$PATH:$HOME/go/bin"
         make test
 
