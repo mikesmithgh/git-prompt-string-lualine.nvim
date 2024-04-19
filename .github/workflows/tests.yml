@@ -27,7 +27,7 @@ jobs:
         version: 'stable'
 
     - name: (debug) Setup tmate session
-      if: ${{ (inputs.enable_debug_tmate }}
+      if: ${{ inputs.enable_debug_tmate }}
       uses: mxschmitt/action-tmate@v3
 
     - name: Test git-prompt-string-lualine
