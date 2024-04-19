@@ -7,6 +7,11 @@ on:
     branches:
       - 'main'
   workflow_dispatch:
+    inputs:
+      enable_debug_tmate:
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   plenary:
@@ -20,6 +25,10 @@ jobs:
       with:
         neovim: true
         version: 'stable'
+
+    - name: (debug) Setup tmate session
+      if: ${{ (inputs.enable_debug_tmate }}
+      uses: mxschmitt/action-tmate@v3
 
     - name: Test git-prompt-string-lualine
       run: |
