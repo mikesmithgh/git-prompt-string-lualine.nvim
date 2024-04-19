@@ -31,6 +31,10 @@ highlights = {
 }
 ]]
 end
+-- v9 does not have vim.fs.joinpath
+local function joinpath(...)
+  return (table.concat({ ... }, '/'):gsub('//+', '/'))
+end
 
 describe('git-prompt-string-lualine', function()
   local opts
@@ -88,7 +92,7 @@ describe('git-prompt-string-lualine', function()
     opts.sections.lualine_a = {
       {
         'git_prompt_string',
-        cwd = vim.fs.joinpath(testdata, 'am'),
+        cwd = joinpath(testdata, 'am'),
       },
     }
     require('lualine').setup(opts)
@@ -103,7 +107,7 @@ describe('git-prompt-string-lualine', function()
     opts.sections.lualine_a = {
       {
         'git_prompt_string',
-        cwd = vim.fs.joinpath(testdata, 'am_rebase'),
+        cwd = joinpath(testdata, 'am_rebase'),
       },
     }
     require('lualine').setup(opts)
@@ -118,7 +122,7 @@ describe('git-prompt-string-lualine', function()
     opts.sections.lualine_a = {
       {
         'git_prompt_string',
-        cwd = vim.fs.joinpath(testdata, 'bare'),
+        cwd = joinpath(testdata, 'bare'),
       },
     }
     require('lualine').setup(opts)
@@ -133,7 +137,7 @@ describe('git-prompt-string-lualine', function()
     opts.sections.lualine_a = {
       {
         'git_prompt_string',
-        cwd = vim.fs.joinpath(testdata, 'bisect'),
+        cwd = joinpath(testdata, 'bisect'),
       },
     }
     require('lualine').setup(opts)
@@ -148,7 +152,7 @@ describe('git-prompt-string-lualine', function()
     opts.sections.lualine_a = {
       {
         'git_prompt_string',
-        cwd = vim.fs.joinpath(testdata, 'cherry_pick'),
+        cwd = joinpath(testdata, 'cherry_pick'),
       },
     }
     require('lualine').setup(opts)
@@ -163,7 +167,7 @@ describe('git-prompt-string-lualine', function()
     opts.sections.lualine_a = {
       {
         'git_prompt_string',
-        cwd = vim.fs.joinpath(testdata, 'cherry_pick_conflict'),
+        cwd = joinpath(testdata, 'cherry_pick_conflict'),
       },
     }
     require('lualine').setup(opts)
@@ -178,7 +182,7 @@ describe('git-prompt-string-lualine', function()
     opts.sections.lualine_a = {
       {
         'git_prompt_string',
-        cwd = vim.fs.joinpath(testdata, 'clean'),
+        cwd = joinpath(testdata, 'clean'),
       },
     }
     require('lualine').setup(opts)
@@ -193,7 +197,7 @@ describe('git-prompt-string-lualine', function()
     opts.sections.lualine_a = {
       {
         'git_prompt_string',
-        cwd = vim.fs.joinpath(testdata, 'conflict_diverged'),
+        cwd = joinpath(testdata, 'conflict_diverged'),
       },
     }
     require('lualine').setup(opts)
@@ -208,7 +212,7 @@ describe('git-prompt-string-lualine', function()
     opts.sections.lualine_a = {
       {
         'git_prompt_string',
-        cwd = vim.fs.joinpath(testdata, 'dirty_staged'),
+        cwd = joinpath(testdata, 'dirty_staged'),
       },
     }
     require('lualine').setup(opts)
@@ -223,7 +227,7 @@ describe('git-prompt-string-lualine', function()
     opts.sections.lualine_a = {
       {
         'git_prompt_string',
-        cwd = vim.fs.joinpath(testdata, 'git_dir'),
+        cwd = joinpath(testdata, 'git_dir'),
       },
     }
     require('lualine').setup(opts)
@@ -238,7 +242,7 @@ describe('git-prompt-string-lualine', function()
     opts.sections.lualine_a = {
       {
         'git_prompt_string',
-        cwd = vim.fs.joinpath(testdata, 'no_upstream_remote'),
+        cwd = joinpath(testdata, 'no_upstream_remote'),
       },
     }
     require('lualine').setup(opts)
@@ -253,7 +257,7 @@ describe('git-prompt-string-lualine', function()
     opts.sections.lualine_a = {
       {
         'git_prompt_string',
-        cwd = vim.fs.joinpath(testdata, 'rebase_i'),
+        cwd = joinpath(testdata, 'rebase_i'),
       },
     }
     require('lualine').setup(opts)
@@ -268,7 +272,7 @@ describe('git-prompt-string-lualine', function()
     opts.sections.lualine_a = {
       {
         'git_prompt_string',
-        cwd = vim.fs.joinpath(testdata, 'tag'),
+        cwd = joinpath(testdata, 'tag'),
       },
     }
     require('lualine').setup(opts)
@@ -285,7 +289,7 @@ describe('git-prompt-string-lualine', function()
     opts.sections.lualine_a = {
       {
         'git_prompt_string',
-        cwd = vim.fs.joinpath(testdata, 'clean'),
+        cwd = joinpath(testdata, 'clean'),
         trim_prompt_prefix = false,
       },
     }
@@ -314,7 +318,7 @@ describe('git-prompt-string-lualine', function()
     vim.g.terminal_color_8 = colors.no_upstream
 
     opts.sections.lualine_a = {
-      { 'git_prompt_string', cwd = vim.fs.joinpath(testdata, 'dirty') },
+      { 'git_prompt_string', cwd = joinpath(testdata, 'dirty') },
     }
     require('lualine').setup(opts)
     statusline:expect(highlights('dirty', colors.dirty) .. [[
@@ -326,7 +330,7 @@ describe('git-prompt-string-lualine', function()
     git_prompt_string_lualine.prompt = nil
 
     opts.sections.lualine_a = {
-      { 'git_prompt_string', cwd = vim.fs.joinpath(testdata, 'clean') },
+      { 'git_prompt_string', cwd = joinpath(testdata, 'clean') },
     }
 
     require('lualine').setup(opts)
@@ -339,7 +343,7 @@ describe('git-prompt-string-lualine', function()
     git_prompt_string_lualine.prompt = nil
 
     opts.sections.lualine_a = {
-      { 'git_prompt_string', cwd = vim.fs.joinpath(testdata, 'conflict_diverged') },
+      { 'git_prompt_string', cwd = joinpath(testdata, 'conflict_diverged') },
     }
 
     require('lualine').setup(opts)
@@ -352,7 +356,7 @@ describe('git-prompt-string-lualine', function()
     git_prompt_string_lualine.prompt = nil
 
     opts.sections.lualine_a = {
-      { 'git_prompt_string', cwd = vim.fs.joinpath(testdata, 'bisect') },
+      { 'git_prompt_string', cwd = joinpath(testdata, 'bisect') },
     }
 
     require('lualine').setup(opts)
@@ -365,7 +369,7 @@ describe('git-prompt-string-lualine', function()
     git_prompt_string_lualine.prompt = nil
 
     opts.sections.lualine_a = {
-      { 'git_prompt_string', cwd = vim.fs.joinpath(testdata, 'untracked') },
+      { 'git_prompt_string', cwd = joinpath(testdata, 'untracked') },
     }
 
     require('lualine').setup(opts)
@@ -378,7 +382,7 @@ describe('git-prompt-string-lualine', function()
     git_prompt_string_lualine.prompt = nil
 
     opts.sections.lualine_a = {
-      { 'git_prompt_string', cwd = vim.fs.joinpath(testdata, 'no_upstream') },
+      { 'git_prompt_string', cwd = joinpath(testdata, 'no_upstream') },
     }
 
     require('lualine').setup(opts)

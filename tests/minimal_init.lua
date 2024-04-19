@@ -2,6 +2,12 @@ local plenary_dir = os.getenv('PLENARY_DIR') or 'tmp/plenary.nvim'
 local lualine_dir = os.getenv('LUALINE_DIR') or 'tmp/lualine.nvim'
 local git_prompt_string_dir = os.getenv('GIT_PROMPT_STRING_DIR') or 'tmp/git-prompt-string'
 local is_not_a_directory = vim.fn.isdirectory(plenary_dir) == 0
+
+-- v9 does not have vim.fs.joinpath
+local function joinpath(...)
+  return (table.concat({ ... }, '/'):gsub('//+', '/'))
+end
+
 if is_not_a_directory then
   vim.fn.system({ 'git', 'clone', 'https://github.com/nvim-lua/plenary.nvim', plenary_dir })
   vim.fn.system({ 'git', 'clone', 'https://github.com/nvim-lualine/lualine.nvim', lualine_dir })
@@ -13,7 +19,7 @@ if is_not_a_directory then
   })
   local testdata = 'tmp/git-prompt-string/testdata'
   for d in vim.fs.dir(testdata) do
-    vim.fn.rename(vim.fs.joinpath(testdata, d, 'dot_git'), vim.fs.joinpath(testdata, d, '.git'))
+    vim.fn.rename(joinpath(testdata, d, 'dot_git'), joinpath(testdata, d, '.git'))
   end
 end
 
