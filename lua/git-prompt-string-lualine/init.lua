@@ -72,7 +72,7 @@ M.set_prompt = function(callback, delay)
       return
     end
     if M.timer then
-      vim.uv.timer_stop(M.timer)
+      vim.uv.timer_stop(M.timer) -- change loop to uv if/when we no longer support neovim v9
       M.timer = nil
     end
     M.timer = vim.defer_fn(function()

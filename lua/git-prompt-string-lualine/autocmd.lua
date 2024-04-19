@@ -41,7 +41,7 @@ local handle_dir_change = function(fs_handle)
 end
 
 M.setup = function()
-  local fs_handle, err_name, err_msg = vim.uv.new_fs_event()
+  local fs_handle, err_name, err_msg = vim.loop.new_fs_event() -- change loop to uv if/when we no longer support neovim v9
   if not fs_handle then
     notify_fs_err('error creating fs_event', err_name, err_msg)
     return
