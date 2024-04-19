@@ -3,28 +3,29 @@ local M = lualine_require.require('lualine.component'):extend()
 local git_prompt_string_autocmd = require('git-prompt-string-lualine.autocmd')
 local git_prompt_string_lualine = require('git-prompt-string-lualine')
 
-local default_options = {
-  colored = true,
-  icons_enabled = true,
-  trim_prompt_prefix = true, -- remove whitespace from beginning of prompt prefix
-  prompt_config = {
-    prompt_prefix = nil,
-    prompt_suffix = nil,
-    ahead_format = nil,
-    behind_format = nil,
-    diverged_format = nil,
-    no_upstream_remote_format = nil,
-    color_disabled = false,
-    color_clean = { fg = vim.g.terminal_color_2 or 'DarkGreen' },
-    color_delta = { fg = vim.g.terminal_color_3 or 'DarkYellow' },
-    color_dirty = { fg = vim.g.terminal_color_1 or 'DarkRed' },
-    color_untracked = { fg = vim.g.terminal_color_5 or 'DarkMagenta' },
-    color_no_upstream = { fg = vim.g.terminal_color_8 or 'DarkGray' },
-    color_merging = { fg = vim.g.terminal_color_4 or 'DarkBlue' },
-  },
-}
-
 function M:init(options)
+  local default_options = {
+    colored = true,
+    icons_enabled = true,
+    trim_prompt_prefix = true, -- remove whitespace from beginning of prompt prefix
+    prompt_config = {
+      prompt_prefix = nil,
+      prompt_suffix = nil,
+      ahead_format = nil,
+      behind_format = nil,
+      diverged_format = nil,
+      no_upstream_remote_format = nil,
+      color_disabled = false,
+      color_clean = { fg = vim.g.terminal_color_2 or 'DarkGreen' },
+      color_delta = { fg = vim.g.terminal_color_3 or 'DarkYellow' },
+      color_dirty = { fg = vim.g.terminal_color_1 or 'DarkRed' },
+      color_untracked = { fg = vim.g.terminal_color_5 or 'DarkMagenta' },
+      color_no_upstream = { fg = vim.g.terminal_color_8 or 'DarkGray' },
+      color_merging = { fg = vim.g.terminal_color_4 or 'DarkBlue' },
+    },
+    cwd = nil, -- not likely to be used, primarily used for testing
+  }
+
   M.super.init(self, options)
   self.options = vim.tbl_deep_extend('keep', self.options or {}, default_options)
   self.highlights = {
@@ -47,7 +48,7 @@ function M:init(options)
   end
 
   git_prompt_string_autocmd.setup()
-  git_prompt_string_lualine.setup(self.options.prompt_config)
+  git_prompt_string_lualine.setup(self.options)
 end
 
 function M:update_status()

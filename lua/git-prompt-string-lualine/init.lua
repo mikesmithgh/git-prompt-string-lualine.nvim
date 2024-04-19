@@ -22,28 +22,39 @@ M.git_prompt_string_json = function()
     '--color-no-upstream=no_upstream',
     '--color-merging=merging',
   }
-  if opts.prompt_prefix then
-    table.insert(cmd, '--prompt-prefix=' .. opts.prompt_prefix)
+  local prompt_config = opts.prompt_config
+  if prompt_config.prompt_prefix then
+    table.insert(cmd, '--prompt-prefix=' .. prompt_config.prompt_prefix)
   end
-  if opts.prompt_suffix then
-    table.insert(cmd, '--prompt-suffix=' .. opts.prompt_suffix)
+  if prompt_config.prompt_suffix then
+    table.insert(cmd, '--prompt-suffix=' .. prompt_config.prompt_suffix)
   end
-  if opts.ahead_format then
-    table.insert(cmd, '--ahead-format=' .. opts.ahead_format)
+  if prompt_config.ahead_format then
+    table.insert(cmd, '--ahead-format=' .. prompt_config.ahead_format)
   end
-  if opts.behind_format then
-    table.insert(cmd, '--behind-format=' .. opts.behind_format)
+  if prompt_config.behind_format then
+    table.insert(cmd, '--behind-format=' .. prompt_config.behind_format)
   end
-  if opts.diverged_format then
-    table.insert(cmd, '--diverged-format=' .. opts.diverged_format)
+  if prompt_config.diverged_format then
+    table.insert(cmd, '--diverged-format=' .. prompt_config.diverged_format)
   end
-  if opts.no_upstream_remote_format then
-    table.insert(cmd, '--no-upstream-remote-format=' .. opts.no_upstream_remote_format)
+  if prompt_config.no_upstream_remote_format then
+    table.insert(cmd, '--no-upstream-remote-format=' .. prompt_config.no_upstream_remote_format)
   end
-  if opts.color_disabled then
+  if prompt_config.color_disabled then
     table.insert(cmd, '--color-disabled')
   end
-  local stdout = vim.fn.system(cmd) or '' -- replace with vim.system if/when we no longer support neovim v9
+  local stdout = ''
+  -- replace with vim.system if/when we no longer support neovim v9
+  local job_id = vim.fn.jobstart(cmd, {
+    cwd = opts.cwd,
+    stdout_buffered = true,
+    stderr_buffered = true,
+    on_stdout = function(_, data)
+      stdout = table.concat(data, '')
+    end,
+  })
+  vim.fn.jobwait({ job_id })
   local json = vim.json.decode(stdout == '' and '{}' or stdout)
   return {
     color = json.color or '',
