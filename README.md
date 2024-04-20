@@ -60,7 +60,7 @@ echo "require('git-prompt-string-lualine')" >> "$HOME/.config/nvim/init.lua"
 ## 🛠️ Setup
 
 - Install [git-prompt-string](https://github.com/mikesmithgh/git-prompt-string) following the [Installation](https://github.com/mikesmithgh/git-prompt-string?tab=readme-ov-file#-installation) instructions.
-- Install [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) following the [Installation](https://github.com/mikesmithgh/git-prompt-string?tab=readme-ov-file#-installation) instructions.
+- Install [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) following the [Installation](https://github.com/nvim-lualine/lualine.nvim?tab=readme-ov-file#installation) instructions.
 
 ## ⚙️ Configuration
 
