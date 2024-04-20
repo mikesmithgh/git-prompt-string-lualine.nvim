@@ -6,6 +6,9 @@ git-prompt-string-lualine.nvim is a [lualine.nvim](https://github.com/nvim-luali
 
 [![neovim: v0.9+](https://img.shields.io/static/v1?style=flat-square&label=neovim&message=v0.9%2b&logo=neovim&labelColor=282828&logoColor=8faa80&color=414b32)](https://neovim.io/)
 [![git-prompt-string: v1.3+](https://img.shields.io/static/v1?style=flat-square&label=git-prompt-string&message=v1.3%2b&logo=git&labelColor=282828&logoColor=ff6961&color=ff6961)](https://github.com/mikesmithgh/git-prompt-string)
+[![semantic-release: angular](https://img.shields.io/static/v1?style=flat-square&label=semantic-release&message=angular&logo=semantic-release&labelColor=282828&logoColor=d8869b&color=8f3f71)](https://github.com/semantic-release/semantic-release)
+[![test status](https://img.shields.io/github/actions/workflow/status/mikesmithgh/git-prompt-string-lualine.nvim/tests.yml?style=flat-square&logo=github&logoColor=c7c7c7&label=tests&labelColor=282828&event=push)](https://github.com/mikesmithgh/git-prompt-string-lualine.nvim/actions/workflows/tests.yml?query=event%3Apush)
+[![nightly test status](https://img.shields.io/github/actions/workflow/status/mikesmithgh/git-prompt-string-lualine.nvim/tests.yml?style=flat-square&logo=github&logoColor=c7c7c7&label=nightly%20tests&labelColor=282828&event=schedule)](https://github.com/mikesmithgh/git-prompt-string-lualine.nvim/actions/workflows/tests.yml?query=event%3Aschedule)
 
 ![git-prompt-string-lualine](https://github.com/mikesmithgh/git-prompt-string-lualine.nvim/assets/10135646/d17ee2bf-e796-4246-9488-18a938a7d807)
 
