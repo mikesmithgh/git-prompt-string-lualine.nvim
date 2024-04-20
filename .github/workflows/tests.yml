@@ -12,6 +12,10 @@ on:
         required: false
         type: boolean
         default: false
+  schedule:
+    # 5am EST
+    - cron: "0 9 * * *"
+
 
 jobs:
   plenary:
