@@ -8,6 +8,7 @@ function M:init(options)
     colored = true,
     icons_enabled = true,
     trim_prompt_prefix = true, -- remove whitespace from beginning of prompt prefix
+    -- git-prompt-string configuration options, see https://github.com/mikesmithgh/git-prompt-string?tab=readme-ov-file#configuration-options
     prompt_config = {
       prompt_prefix = nil,
       prompt_suffix = nil,
