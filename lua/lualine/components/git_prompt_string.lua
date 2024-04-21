@@ -45,6 +45,7 @@ function M:init(options)
       untracked = self:create_hl(self.options.prompt_config.color_untracked, 'untracked'),
       no_upstream = self:create_hl(self.options.prompt_config.color_no_upstream, 'no_upstream'),
       merging = self:create_hl(self.options.prompt_config.color_merging, 'merging'),
+      error = self:create_hl('ErrorMsg', 'error'),
     }
   end
 
@@ -63,10 +64,14 @@ function M:update_status()
     self.options.icon_color_highlight = self.highlights[prompt.color]
     self.options.color_highlight = self.highlights[prompt.color]
   end
-  if self.options.trim_prompt_prefix then
+  if self.options.trim_prompt_prefix and prompt.prompt_prefix then
     prompt.prompt_prefix = prompt.prompt_prefix:gsub('^%s+', '')
   end
-  return prompt.prompt_prefix .. prompt.branch_info .. prompt.branch_status .. prompt.prompt_suffix
+  return (prompt.error or '')
+    .. (prompt.prompt_prefix or '')
+    .. (prompt.branch_info or '')
+    .. (prompt.branch_status or '')
+    .. (prompt.prompt_suffix or '')
 end
 
 return M

@@ -45,8 +45,9 @@ M.git_prompt_string_json = function()
     table.insert(cmd, '--color-disabled')
   end
   local stdout = ''
+  local job_id
   -- replace with vim.system if/when we no longer support neovim v9
-  local job_id = vim.fn.jobstart(cmd, {
+  local status, result = pcall(vim.fn.jobstart, cmd, {
     cwd = opts.cwd,
     stdout_buffered = true,
     stderr_buffered = true,
@@ -54,6 +55,14 @@ M.git_prompt_string_json = function()
       stdout = table.concat(data, '')
     end,
   })
+
+  if status then
+    job_id = result
+  else
+    vim.notify_once('git-prompt-string-lualine.nvim: ERROR ' .. result, vim.log.levels.ERROR, {})
+    return { error = result, color = 'error' }
+  end
+
   vim.fn.jobwait({ job_id })
   local json = vim.json.decode(stdout == '' and '{}' or stdout)
   return {
